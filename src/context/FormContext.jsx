@@ -8,6 +8,7 @@ export const FormProvider = ({ children }) => {
   const [formData, setFormData] = useState({});
   const [submissionStatus, setSubmissionStatus] = useState(null);
 
+  // Load form data and step from URL on initial render
   useEffect(() => {
     const loadStateFromUrl = () => {
       const queryParams = new URLSearchParams(window.location.search);
@@ -27,13 +28,9 @@ export const FormProvider = ({ children }) => {
     };
 
     loadStateFromUrl();
-    window.addEventListener("popstate", loadStateFromUrl);
-
-    return () => {
-      window.removeEventListener("popstate", loadStateFromUrl);
-    };
   }, []);
 
+  // Update URL when step or form data changes
   const updateUrl = (newStep, newFormData) => {
     const queryParams = new URLSearchParams();
     Object.entries(newFormData).forEach(([key, value]) => {
@@ -45,9 +42,27 @@ export const FormProvider = ({ children }) => {
     window.history.pushState({ step: newStep, formData: newFormData }, "", newUrl);
   };
 
+  // Handle browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = (event) => {
+      if (event.state) {
+        const { step: historyStep, formData: historyFormData } = event.state;
+        setStep(historyStep);
+        setFormData(historyFormData || {});
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
   const updateFormData = (data) => {
     const newFormData = { ...formData, ...data };
     setFormData(newFormData);
+    updateUrl(step, newFormData); // Update URL with new form data
   };
 
   const nextStep = () => {
@@ -62,7 +77,7 @@ export const FormProvider = ({ children }) => {
     if (step > 1) {
       const newStep = step - 1;
       setStep(newStep);
-      updateUrl(newStep, formData); 
+      updateUrl(newStep, formData);
     }
   };
 
@@ -85,22 +100,6 @@ export const FormProvider = ({ children }) => {
       alert("Failed to submit form. Please try again.");
     }
   };
-
-  useEffect(() => {
-    const handlePopState = (event) => {
-      if (event.state) {
-        const { step: historyStep, formData: historyFormData } = event.state;
-        setStep(historyStep);
-        setFormData(historyFormData || {});
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, []);
 
   return (
     <FormContext.Provider

@@ -76,15 +76,41 @@ const MultiStepForm = () => {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               {field.label}
             </label>
-            <input
-              type={field.type}
-              name={field.name}
-              placeholder={field.placeholder}
-              value={formData[field.name] || ""}
-              onChange={handleChange}
-              className="w-[568.2px] h-[56px] bg-white p-2 border border-[#E5E5E7] rounded-[10px] placeholder:text-[#8A8A8A] focus:border-[#E5E5E7] focus:outline-none"
-              required={field.required}
-            />
+            {field.type === "select" ? (
+              <div className="relative">
+                <select
+                  name={field.name}
+                  value={formData[field.name] || ""}
+                  onChange={handleChange}
+                  className="w-[568.2px] h-[56px] bg-white p-2 border border-[#E5E5E7] rounded-[10px] focus:border-[#E5E5E7] focus:outline-none appearance-none bg-no-repeat bg-[right_12px_center] bg-[length:16px]"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+                      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2301796F"><path d="M7 10l5 5 5-5z"/></svg>'
+                    )}")`,
+                  }}
+                  required={field.required}
+                >
+                  <option value="" disabled className="text-[#E5E5E7]">
+                    {field.placeholder}
+                  </option>
+                  {field.options.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <input
+                type={field.type}
+                name={field.name}
+                placeholder={field.placeholder}
+                value={formData[field.name] || ""}
+                onChange={handleChange}
+                className="w-[568.2px] h-[56px] bg-white p-2 border border-[#E5E5E7] rounded-[10px] placeholder:text-[#8A8A8A] focus:border-[#E5E5E7] focus:outline-none"
+                required={field.required}
+              />
+            )}
           </div>
         ))}
 

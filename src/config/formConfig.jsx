@@ -27,4 +27,27 @@ export const formSteps = [
         },
       ],
     },
+    {
+      step: 3,
+      title: "Treatment Info",
+      subtitle: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      fields: [
+        {
+          name: "country",
+          type: "select",
+          label: "Country of Residence",
+          placeholder: "Select your country",
+          required: true,
+          options: [
+            "United States",
+            "Canada",
+            "United Kingdom",
+            "Australia",
+            "Germany",
+            "India",
+            "Other",
+          ],
+        },
+      ],
+    },
   ];
