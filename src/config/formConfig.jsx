@@ -1,45 +1,30 @@
-import { createContext, useContext, useState } from "react";
-
-const FormContext = createContext();
-
-export const FormProvider = ({ children }) => {
-  const [formData, setFormData] = useState({});
-  const [submissionStatus, setSubmissionStatus] = useState(null);
-
-  const updateFormData = (data) => {
-    setFormData((prevData) => ({ ...prevData, ...data }));
-  };
-
-  const clearFormData = () => {
-    setFormData({});
-    setSubmissionStatus(null);
-  };
-
-  const handleFormSubmission = async () => {
-    try {
-      console.log("Submitting Form Data:", formData);
-      setSubmissionStatus("success");
-      alert("Form submitted successfully!");
-      clearFormData();
-    } catch (error) {
-      console.error("Submission Error:", error);
-      setSubmissionStatus("error");
-      alert("Failed to submit form. Please try again.");
-    }
-  };
-
-  return (
-    <FormContext.Provider
-      value={{
-        formData,
-        updateFormData,
-        handleFormSubmission,
-        submissionStatus,
-      }}
-    >
-      {children}
-    </FormContext.Provider>
-  );
-};
-
-export const useForm = () => useContext(FormContext);
+export const formSteps = [
+    {
+      step: 1,
+      title: "Basic Information",
+      subtitle: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      fields: [
+        {
+          name: "fullName",
+          type: "text",
+          label: "Full Name",
+          placeholder: "Enter your full name",
+          required: true,
+        },
+      ],
+    },
+    {
+      step: 2,
+      title: "Basic Information",
+      subtitle: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      fields: [
+        {
+          name: "age",
+          type: "number",
+          label: "Age",
+          placeholder: "Enter your age",
+          required: true,
+        },
+      ],
+    },
+  ];

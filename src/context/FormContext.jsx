@@ -1,18 +1,76 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import { formSteps } from "../config/formConfig";
 
 const FormContext = createContext();
 
 export const FormProvider = ({ children }) => {
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({});
   const [submissionStatus, setSubmissionStatus] = useState(null);
 
+  useEffect(() => {
+    const loadStateFromUrl = () => {
+      const queryParams = new URLSearchParams(window.location.search);
+      const data = {};
+      let currentStep = 1;
+
+      queryParams.forEach((value, key) => {
+        if (key === "step") {
+          currentStep = parseInt(value, 10) || 1;
+        } else {
+          data[key] = value;
+        }
+      });
+
+      setStep(currentStep);
+      setFormData(data);
+    };
+
+    loadStateFromUrl();
+    window.addEventListener("popstate", loadStateFromUrl);
+
+    return () => {
+      window.removeEventListener("popstate", loadStateFromUrl);
+    };
+  }, []);
+
+  const updateUrl = (newStep, newFormData) => {
+    const queryParams = new URLSearchParams();
+    Object.entries(newFormData).forEach(([key, value]) => {
+      if (value) queryParams.set(key, value);
+    });
+    queryParams.set("step", newStep);
+
+    const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
+    window.history.pushState({ step: newStep, formData: newFormData }, "", newUrl);
+  };
+
   const updateFormData = (data) => {
-    setFormData((prevData) => ({ ...prevData, ...data }));
+    const newFormData = { ...formData, ...data };
+    setFormData(newFormData);
+  };
+
+  const nextStep = () => {
+    if (step < formSteps.length) {
+      const newStep = step + 1;
+      setStep(newStep);
+      updateUrl(newStep, formData);
+    }
+  };
+
+  const prevStep = () => {
+    if (step > 1) {
+      const newStep = step - 1;
+      setStep(newStep);
+      updateUrl(newStep, formData); 
+    }
   };
 
   const clearFormData = () => {
     setFormData({});
+    setStep(1);
     setSubmissionStatus(null);
+    window.history.replaceState(null, "", window.location.pathname);
   };
 
   const handleFormSubmission = async () => {
@@ -28,11 +86,31 @@ export const FormProvider = ({ children }) => {
     }
   };
 
+  useEffect(() => {
+    const handlePopState = (event) => {
+      if (event.state) {
+        const { step: historyStep, formData: historyFormData } = event.state;
+        setStep(historyStep);
+        setFormData(historyFormData || {});
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
   return (
     <FormContext.Provider
       value={{
+        step,
         formData,
         updateFormData,
+        nextStep,
+        prevStep,
+        clearFormData,
         handleFormSubmission,
         submissionStatus,
       }}
