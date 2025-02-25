@@ -26,7 +26,7 @@ const MultiStepForm = () => {
   };
 
   const currentStepConfig = formSteps.find((s) => s.step === step);
-  const progressPercentage = ((step - 1) / (formSteps.length - 1)) * 100;
+  const progressPercentage = ((step - 1) / (formSteps.length)) * 100;
 
   return (
     <div>
@@ -90,7 +90,7 @@ const MultiStepForm = () => {
                   }}
                   required={field.required}
                 >
-                  <option value="" disabled className="text-[#E5E5E7]">
+                  <option value="" disabled>
                     {field.placeholder}
                   </option>
                   {field.options.map((option) => (
@@ -100,6 +100,15 @@ const MultiStepForm = () => {
                   ))}
                 </select>
               </div>
+            ) : field.type === "textarea" ? (
+              <textarea
+                name={field.name}
+                placeholder={field.placeholder}
+                value={formData[field.name] || ""}
+                onChange={handleChange}
+                className="w-[568.2px] h-[100px] bg-white p-2 border border-[#E5E5E7] rounded-[10px] placeholder:text-[#8A8A8A] focus:border-[#E5E5E7] focus:outline-none"
+                required={field.required}
+              />
             ) : (
               <input
                 type={field.type}

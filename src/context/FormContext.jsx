@@ -8,7 +8,6 @@ export const FormProvider = ({ children }) => {
   const [formData, setFormData] = useState({});
   const [submissionStatus, setSubmissionStatus] = useState(null);
 
-  // Load form data and step from URL on initial render
   useEffect(() => {
     const loadStateFromUrl = () => {
       const queryParams = new URLSearchParams(window.location.search);
@@ -30,7 +29,6 @@ export const FormProvider = ({ children }) => {
     loadStateFromUrl();
   }, []);
 
-  // Update URL when step or form data changes
   const updateUrl = (newStep, newFormData) => {
     const queryParams = new URLSearchParams();
     Object.entries(newFormData).forEach(([key, value]) => {
@@ -42,7 +40,6 @@ export const FormProvider = ({ children }) => {
     window.history.pushState({ step: newStep, formData: newFormData }, "", newUrl);
   };
 
-  // Handle browser back/forward navigation
   useEffect(() => {
     const handlePopState = (event) => {
       if (event.state) {
@@ -62,7 +59,7 @@ export const FormProvider = ({ children }) => {
   const updateFormData = (data) => {
     const newFormData = { ...formData, ...data };
     setFormData(newFormData);
-    updateUrl(step, newFormData); // Update URL with new form data
+    updateUrl(step, newFormData);
   };
 
   const nextStep = () => {

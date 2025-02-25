@@ -8,7 +8,7 @@ export const formSteps = [
           name: "fullName",
           type: "text",
           label: "Full Name",
-          placeholder: "Enter your full name",
+          placeholder: "Enter Name",
           required: true,
         },
       ],
@@ -22,7 +22,7 @@ export const formSteps = [
           name: "age",
           type: "number",
           label: "Age",
-          placeholder: "Enter your age",
+          placeholder: "Your age",
           required: true,
         },
       ],
@@ -36,7 +36,7 @@ export const formSteps = [
           name: "country",
           type: "select",
           label: "Country of Residence",
-          placeholder: "Select your country",
+          placeholder: "Select",
           required: true,
           options: [
             "United States",
@@ -50,4 +50,18 @@ export const formSteps = [
         },
       ],
     },
+    {
+        step: 4,
+        title: "Treatment Info",
+        subtitle: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        fields: [
+          {
+            name: "procedure",
+            type: "textarea",
+            label: "What procedure are you interested in?",
+            placeholder: "Write",
+            required: true,
+          },
+        ],
+      },
   ];
